@@ -138,7 +138,6 @@ void send_request_animation_count(void) {
 		REQUEST_ANIMATION_COUNT,
 	}, 3);
 }
-
 void send_animation_config_start(uint16_t animation_id) {
 	device_send((uint8_t[]) {
 		PREAMBLE,
