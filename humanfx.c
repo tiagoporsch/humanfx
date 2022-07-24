@@ -1,4 +1,5 @@
 #include <libusb-1.0/libusb.h>
+#include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -205,7 +206,9 @@ void send_animation_set_default(uint16_t animation_id) {
 	}, 6);
 }
 
-void send_zone_select(uint8_t loop, uint16_t zone_count, uint8_t zones[]) {
+void send_zone_select(uint8_t loop, uint16_t zone_count, ...) {
+	va_list args;
+	va_start(args, zone_count);
 	uint8_t packet[5 + zone_count];
 	packet[0] = PREAMBLE;
 	packet[1] = ZONE_SELECT;
@@ -213,8 +216,9 @@ void send_zone_select(uint8_t loop, uint16_t zone_count, uint8_t zones[]) {
 	packet[3] = (zone_count >> 8) & 0xFF;
 	packet[4] = (zone_count) & 0xFF;
 	for (uint16_t i = 0; i < zone_count; i++)
-		packet[5 + i] = zones[i];
+		packet[5 + i] = (uint8_t) va_arg(args, int);
 	device_send(packet, sizeof(packet));
+	va_end(args);
 }
 
 void send_add_action(uint16_t action, uint16_t duration, uint16_t tempo, uint32_t color) {
@@ -232,7 +236,9 @@ void send_add_action(uint16_t action, uint16_t duration, uint16_t tempo, uint32_
 	}, 10);
 }
 
-void send_set_brightness(uint8_t brightness, uint16_t zone_count, uint8_t zones[]) {
+void send_set_brightness(uint8_t brightness, uint16_t zone_count, ...) {
+	va_list args;
+	va_start(args, zone_count);
 	uint8_t packet[5 + zone_count];
 	packet[0] = PREAMBLE;
 	packet[1] = SET_BRIGHTNESS;
@@ -240,6 +246,7 @@ void send_set_brightness(uint8_t brightness, uint16_t zone_count, uint8_t zones[
 	packet[3] = (zone_count >> 8) & 0xFF;
 	packet[4] = (zone_count) & 0xFF;
 	for (uint16_t i = 0; i < zone_count; i++)
-		packet[5 + i] = zones[i];
+		packet[5 + i] = (uint8_t) va_arg(args, int);
 	device_send(packet, sizeof(packet));
+	va_end(args);
 }

@@ -9,5 +9,14 @@ $(TARGET): $(SOURCE)
 run: $(TARGET)
 	./$(TARGET)
 
+install: $(TARGET)
+	mkdir --parents "$(HOME)/.local/bin"
+	cp "$(TARGET)" "$(HOME)/.local/bin"
+
+uninstall:
+	rm --force "$(HOME)/.local/bin/$(TARGET)"
+	rmdir --ignore-fail-on-empty "$(HOME)/.local/bin"
+	rmdir --ignore-fail-on-empty "$(HOME)/.local"
+
 clean:
-	rm -f $(TARGET)
+	rm --force "$(TARGET)"

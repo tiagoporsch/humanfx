@@ -16,6 +16,7 @@ void device_receive(uint8_t[], uint16_t);
 #define ZONE_MIDDLE_LEFT 0x01
 #define ZONE_MIDDLE_RIGHT 0x02
 #define ZONE_RIGHT 0x03
+#define ZONE_ALL ZONE_LEFT, ZONE_MIDDLE_LEFT, ZONE_MIDDLE_RIGHT, ZONE_RIGHT
 
 #define REQUEST 0x20
 #define REQUEST_FIRMWARE_VERSION 0x00
@@ -43,7 +44,7 @@ void send_animation_play(uint16_t);
 void send_animation_set_default(uint16_t);
 
 #define ZONE_SELECT 0x23
-void send_zone_select(uint8_t, uint16_t, uint8_t[]);
+void send_zone_select(uint8_t, uint16_t, ...);
 
 #define ADD_ACTION 0x24
 #define ACTION_COLOR 0x00
@@ -55,4 +56,4 @@ void send_add_action(uint16_t, uint16_t, uint16_t, uint32_t);
 #define BRIGHTNESS_OFF 0x64
 #define BRIGHTNESS_DIM 0x32
 #define BRIGHTNESS_FULL 0x00
-void send_set_brightness(uint8_t, uint16_t, uint8_t[]);
+void send_set_brightness(uint8_t, uint16_t, ...);
