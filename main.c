@@ -76,19 +76,17 @@ void example_back_and_forth(uint32_t color) {
 	device_release();
 }
 
-void example_spectrum(uint16_t duration, uint16_t tempo) {
+void example_spectrum(uint16_t duration) {
 	device_acquire();
 	send_animation_config_start(0);
-
 	send_zone_select(1, 4, ZONE_ALL);
-	send_add_action(ACTION_MORPH, duration, tempo, 0xFF0000);
-	send_add_action(ACTION_MORPH, duration, tempo, 0xFFa500);
-	send_add_action(ACTION_MORPH, duration, tempo, 0xFFFF00);
-	send_add_action(ACTION_MORPH, duration, tempo, 0x008000);
-	send_add_action(ACTION_MORPH, duration, tempo, 0x00BFFF);
-	send_add_action(ACTION_MORPH, duration, tempo, 0x0000FF);
-	send_add_action(ACTION_MORPH, duration, tempo, 0x800080);
-
+	send_add_action(ACTION_MORPH, duration, 64, 0xFF0000);
+	send_add_action(ACTION_MORPH, duration, 64, 0xFFa500);
+	send_add_action(ACTION_MORPH, duration, 64, 0xFFFF00);
+	send_add_action(ACTION_MORPH, duration, 64, 0x008000);
+	send_add_action(ACTION_MORPH, duration, 64, 0x00BFFF);
+	send_add_action(ACTION_MORPH, duration, 64, 0x0000FF);
+	send_add_action(ACTION_MORPH, duration, 64, 0x800080);
 	send_animation_config_play(0);
 	device_release();
 }
@@ -98,6 +96,16 @@ void example_static(uint32_t color) {
 	send_animation_config_start(0);
 	send_zone_select(1, 4, ZONE_ALL);
 	send_add_action(ACTION_COLOR, 1, 2, color);
+	send_animation_config_play(0);
+	device_release();
+}
+
+void example_breathe(uint16_t duration, uint32_t color) {
+	device_acquire();
+	send_animation_config_start(0);
+	send_zone_select(1, 4, ZONE_ALL);
+	send_add_action(ACTION_MORPH, duration, 64, color);
+	send_add_action(ACTION_MORPH, duration, 64, 0);
 	send_animation_config_play(0);
 	device_release();
 }
@@ -129,8 +137,9 @@ int main(int argc, char** argv) {
 	// Example temporary effects
 	// example_wave(0xFFFFFF);
 	// example_back_and_forth(0xFFFFFF);
-	// example_spectrum(0x0282, 0x000F);
+	// example_spectrum(1000);
 	// example_static(0xFF00FF);
+	// example_breathe(2500, 0xFFFFFF);
 
 	// Example setting as default
 	// device_acquire();
