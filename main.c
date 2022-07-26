@@ -114,7 +114,8 @@ void print_usage(void) {
 	printf("Usage: humanfx [command] [arguments]...\n");
 	printf("Alienware 187c:0550 controller\n");
 	printf("\n");
-	printf("  brightness <value>\tSets the keyboard brightness\n");
+	printf("  brightness <value>\tSet brightness\n");
+	printf("  static <color>\tStatic color\n");
 	printf("\n");
 }
 
@@ -124,8 +125,28 @@ int main(int argc, char** argv) {
 	if (argc > 2) {
 		if (!strcmp(argv[1], "brightness")) {
 			uint8_t value = 100 - atoi(argv[2]);
+			if (value > 100) {
+				fprintf(stderr, "error: brightness value must be between 0 and 100\n");
+				device_close();
+				return 1;
+			}
 			device_acquire();
 			send_set_brightness(value, 4, ZONE_ALL);
+			device_release();
+		} else if (!strcmp(argv[1], "static")) {
+			uint32_t color = strtol(argv[2], NULL, 16);
+			if (color == 0) {
+				fprintf(stderr, "error: invalid color %s\n", argv[2]);
+				device_close();
+				return 1;
+			}
+			device_acquire();
+			send_animation_remove(1);
+			send_animation_config_start(1);
+			send_zone_select(1, 4, ZONE_ALL);
+			send_add_action(ACTION_COLOR, 1, 2, color);
+			send_animation_config_save(1);
+			send_animation_set_default(1);
 			device_release();
 		} else {
 			print_usage();
