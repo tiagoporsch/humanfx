@@ -6,7 +6,7 @@
 
 void example_wave(uint32_t color) {
 	device_acquire();
-	send_animation_config_play(0);
+	send_animation_config_start(0);
 
 	send_zone_select(1, 1, ZONE_LEFT);
 	send_add_action(ACTION_MORPH, 500, 64, color);
@@ -31,6 +31,50 @@ void example_wave(uint32_t color) {
 	send_add_action(ACTION_MORPH, 500, 64, 0);
 	send_add_action(ACTION_MORPH, 500, 64, 0);
 	send_add_action(ACTION_MORPH, 500, 64, color);
+
+	send_animation_config_play(0);
+	device_release();
+}
+
+void example_rainbow(uint16_t duration) {
+	device_acquire();
+	send_animation_config_start(0);
+
+	send_zone_select(1, 1, ZONE_LEFT);
+	send_add_action(ACTION_MORPH, duration, 64, 0xFF0000);
+	send_add_action(ACTION_MORPH, duration, 64, 0xFFa500);
+	send_add_action(ACTION_MORPH, duration, 64, 0xFFFF00);
+	send_add_action(ACTION_MORPH, duration, 64, 0x008000);
+	send_add_action(ACTION_MORPH, duration, 64, 0x00BFFF);
+	send_add_action(ACTION_MORPH, duration, 64, 0x0000FF);
+	send_add_action(ACTION_MORPH, duration, 64, 0x800080);
+
+	send_zone_select(1, 1, ZONE_MIDDLE_LEFT);
+	send_add_action(ACTION_MORPH, duration, 64, 0x800080);
+	send_add_action(ACTION_MORPH, duration, 64, 0xFF0000);
+	send_add_action(ACTION_MORPH, duration, 64, 0xFFa500);
+	send_add_action(ACTION_MORPH, duration, 64, 0xFFFF00);
+	send_add_action(ACTION_MORPH, duration, 64, 0x008000);
+	send_add_action(ACTION_MORPH, duration, 64, 0x00BFFF);
+	send_add_action(ACTION_MORPH, duration, 64, 0x0000FF);
+
+	send_zone_select(1, 1, ZONE_MIDDLE_RIGHT);
+	send_add_action(ACTION_MORPH, duration, 64, 0x0000FF);
+	send_add_action(ACTION_MORPH, duration, 64, 0x800080);
+	send_add_action(ACTION_MORPH, duration, 64, 0xFF0000);
+	send_add_action(ACTION_MORPH, duration, 64, 0xFFa500);
+	send_add_action(ACTION_MORPH, duration, 64, 0xFFFF00);
+	send_add_action(ACTION_MORPH, duration, 64, 0x008000);
+	send_add_action(ACTION_MORPH, duration, 64, 0x00BFFF);
+
+	send_zone_select(1, 1, ZONE_RIGHT);
+	send_add_action(ACTION_MORPH, duration, 64, 0x00BFFF);
+	send_add_action(ACTION_MORPH, duration, 64, 0x0000FF);
+	send_add_action(ACTION_MORPH, duration, 64, 0x800080);
+	send_add_action(ACTION_MORPH, duration, 64, 0xFF0000);
+	send_add_action(ACTION_MORPH, duration, 64, 0xFFa500);
+	send_add_action(ACTION_MORPH, duration, 64, 0xFFFF00);
+	send_add_action(ACTION_MORPH, duration, 64, 0x008000);
 
 	send_animation_config_play(0);
 	device_release();
@@ -116,6 +160,8 @@ void print_usage(void) {
 	printf("\n");
 	printf("  brightness <value>\tSet brightness\n");
 	printf("  static <color>\tStatic color\n");
+	printf("  spectrum <duration>\tCycles through al colors\n");
+	printf("  breathe <color>\tIt lives and breathes!\n");
 	printf("\n");
 }
 
@@ -148,6 +194,46 @@ int main(int argc, char** argv) {
 			send_animation_config_save(1);
 			send_animation_set_default(1);
 			device_release();
+		} else if (!strcmp(argv[1], "spectrum")) {
+			uint16_t duration = strtol(argv[2], NULL, 10);
+			if (duration == 0) {
+				fprintf(stderr, "error: invalid duration %s\n", argv[2]);
+				device_close();
+				return 1;
+			}
+			device_acquire();
+			send_animation_remove(1);
+			send_animation_config_start(1);
+			send_zone_select(1, 4, ZONE_ALL);
+			send_add_action(ACTION_MORPH, duration, 64, 0xFF0000);
+			send_add_action(ACTION_MORPH, duration, 64, 0xFFa500);
+			send_add_action(ACTION_MORPH, duration, 64, 0xFFFF00);
+			send_add_action(ACTION_MORPH, duration, 64, 0x008000);
+			send_add_action(ACTION_MORPH, duration, 64, 0x00BFFF);
+			send_add_action(ACTION_MORPH, duration, 64, 0x0000FF);
+			send_add_action(ACTION_MORPH, duration, 64, 0x800080);
+			send_animation_config_save(1);
+			send_animation_set_default(1);
+			device_release();
+		} else if (!strcmp(argv[1], "breathe")) {
+			uint32_t color = strtol(argv[2], NULL, 16);
+			if (color == 0) {
+				fprintf(stderr, "error: invalid color %s\n", argv[2]);
+				device_close();
+				return 1;
+			}
+			device_acquire();
+			send_animation_remove(1);
+			send_animation_config_start(1);
+			send_zone_select(1, 4, ZONE_ALL);
+			send_add_action(ACTION_MORPH, 500, 64, color);
+			send_add_action(ACTION_MORPH, 2000, 64, color);
+			send_add_action(ACTION_MORPH, 500, 64, 0);
+			send_add_action(ACTION_MORPH, 2000, 64, 0);
+			send_animation_config_play(0);
+			send_animation_config_save(1);
+			send_animation_set_default(1);
+			device_release();
 		} else {
 			print_usage();
 		}
@@ -157,6 +243,7 @@ int main(int argc, char** argv) {
 
 	// Example temporary effects
 	// example_wave(0xFFFFFF);
+	// example_rainbow(500);
 	// example_back_and_forth(0xFFFFFF);
 	// example_spectrum(1000);
 	// example_static(0xFF00FF);
