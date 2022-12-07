@@ -1,4 +1,5 @@
 TARGET:=humanfx
+PREFIX?=$(HOME)/.local
 SOURCE:=$(wildcard *.c)
 
 all: $(TARGET)
@@ -10,13 +11,12 @@ run: $(TARGET)
 	./$(TARGET)
 
 install: $(TARGET)
-	mkdir --parents "$(HOME)/.local/bin"
-	cp "$(TARGET)" "$(HOME)/.local/bin"
+	mkdir --parents "$(PREFIX)/bin"
+	cp "$(TARGET)" "$(PREFIX)/bin"
 
 uninstall:
-	rm --force "$(HOME)/.local/bin/$(TARGET)"
-	rmdir --ignore-fail-on-empty "$(HOME)/.local/bin"
-	rmdir --ignore-fail-on-empty "$(HOME)/.local"
+	rm --force "$(PREFIX)/bin/$(TARGET)"
+	rmdir --ignore-fail-on-non-empty --parents "$(PREFIX)/bin"
 
 clean:
 	rm --force "$(TARGET)"
