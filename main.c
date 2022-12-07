@@ -160,8 +160,8 @@ void print_usage(void) {
 	printf("\n");
 	printf("  brightness <value>\tSet brightness\n");
 	printf("  static <color>\tStatic color\n");
-	printf("  spectrum <duration>\tCycles through al colors\n");
 	printf("  breathe <color>\tIt lives and breathes!\n");
+	printf("  spectrum <duration>\tCycles through all colors\n");
 	printf("\n");
 }
 
