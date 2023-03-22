@@ -206,6 +206,17 @@ void send_animation_set_default(uint16_t animation_id) {
 	}, 6);
 }
 
+void send_animation_set_startup(uint16_t animation_id) {
+	device_send((uint8_t[]) {
+		PREAMBLE,
+		ANIMATION,
+		(ANIMATION_SET_STARTUP >> 8) & 0xFF,
+		(ANIMATION_SET_STARTUP) & 0xFF,
+		(animation_id >> 8) & 0xFF,
+		(animation_id) & 0xFF,
+	}, 6);
+}
+
 void send_zone_select(uint8_t loop, uint16_t zone_count, ...) {
 	va_list args;
 	va_start(args, zone_count);
@@ -236,13 +247,13 @@ void send_add_action(uint16_t action, uint16_t duration, uint16_t tempo, uint32_
 	}, 10);
 }
 
-void send_set_brightness(uint8_t brightness, uint16_t zone_count, ...) {
+void send_set_dim(uint8_t dim, uint16_t zone_count, ...) {
 	va_list args;
 	va_start(args, zone_count);
 	uint8_t packet[5 + zone_count];
 	packet[0] = PREAMBLE;
-	packet[1] = SET_BRIGHTNESS;
-	packet[2] = brightness;
+	packet[1] = SET_DIM;
+	packet[2] = dim;
 	packet[3] = (zone_count >> 8) & 0xFF;
 	packet[4] = (zone_count) & 0xFF;
 	for (uint16_t i = 0; i < zone_count; i++)

@@ -177,7 +177,7 @@ int main(int argc, char** argv) {
 				return 1;
 			}
 			device_acquire();
-			send_set_brightness(value, 4, ZONE_ALL);
+			send_set_dim(value, 4, ZONE_ALL);
 			device_release();
 		} else if (!strcmp(argv[1], "static")) {
 			uint32_t color = strtol(argv[2], NULL, 16);
@@ -272,7 +272,7 @@ int main(int argc, char** argv) {
 
 	// Set brightness
 	// device_acquire();
-	// send_set_brightness(BRIGHTNESS_FULL, 4, ZONE_ALL);
+	// send_set_dim(BRIGHTNESS_FULL, 4, ZONE_ALL);
 	// device_release();
 
 	device_close();
